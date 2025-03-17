@@ -29,6 +29,14 @@ sudo apt install php8.1-fpm php8.1-common php8.1-mysql \
 # Install additional tools
 echo "Installing additional tools..."
 sudo apt install wget unzip curl -y
+sudo apt install net-tools -y
+
+# Install WP-CLI
+echo "Installing WP-CLI..."
+curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+chmod +x wp-cli.phar
+sudo mv wp-cli.phar /usr/local/bin/wp
+echo "WP-CLI installed successfully"
 
 # Secure MariaDB installation
 echo "Securing MariaDB installation..."
@@ -38,10 +46,19 @@ echo "Please run 'sudo mysql_secure_installation' after this script completes to
 echo "Creating websites directory..."
 sudo mkdir -p /var/www/
 
+# Download ClassicPress
+echo "Downloading ClassicPress..."
+CLASSICPRESS_DIR="/usr/local/share/classicpress"
+sudo mkdir -p "$CLASSICPRESS_DIR"
+sudo wget https://www.classicpress.net/latest.zip -O "$CLASSICPRESS_DIR/classicpress.zip"
+echo "ClassicPress downloaded to $CLASSICPRESS_DIR/classicpress.zip"
+
 # Set proper permissions
 echo "Setting proper permissions..."
 sudo chown -R www-data:www-data /var/www/
 sudo chmod -R 755 /var/www/
+sudo chown root:root "$CLASSICPRESS_DIR/classicpress.zip"
+sudo chmod 644 "$CLASSICPRESS_DIR/classicpress.zip"
 
 # Start and enable services
 echo "Starting and enabling services..."
