@@ -1,4 +1,6 @@
 #!/bin/bash
+# Convert to Windows line endings (CRLF) if needed
+# This script should be run with Git Bash or WSL on Windows
 
 # Exit on error, but allow for cleanup
 set -e
@@ -13,13 +15,13 @@ ERROR_LOG="$LOG_DIR/error_$(date +%Y%m%d_%H%M%S).log"
 # Function to log messages
 log_message() {
     local timestamp=$(date '+%Y-%m-%d %H:%M:%S')
-    echo "[$timestamp] $1" | tee -a "$INSTALL_LOG"
+    echo -e "[$timestamp] $1" | tee -a "$INSTALL_LOG"
 }
 
 # Function to log errors
 log_error() {
     local timestamp=$(date '+%Y-%m-%d %H:%M:%S')
-    echo "[$timestamp] ERROR: $1" | tee -a "$ERROR_LOG" >&2
+    echo -e "[$timestamp] ERROR: $1" | tee -a "$ERROR_LOG" >&2
 }
 
 # Function to check command status

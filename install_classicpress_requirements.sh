@@ -1,25 +1,27 @@
 #!/bin/bash
+# Convert to Windows line endings (CRLF) if needed
+# This script should be run with Git Bash or WSL on Windows
 
 # Exit on error
 set -e
 
-echo "Starting installation of ClassicPress requirements..."
+echo -e "Starting installation of ClassicPress requirements..."
 
 # Update system
-echo "Updating system packages..."
+echo -e "Updating system packages..."
 sudo apt update
 sudo apt upgrade -y
 
 # Install Nginx
-echo "Installing Nginx..."
+echo -e "Installing Nginx..."
 sudo apt install nginx -y
 
 # Install MariaDB
-echo "Installing MariaDB..."
+echo -e "Installing MariaDB..."
 sudo apt install mariadb-server mariadb-client -y
 
 # Install PHP and required extensions
-echo "Installing PHP and required extensions..."
+echo -e "Installing PHP and required extensions..."
 sudo apt install php8.1-fpm php8.1-common php8.1-mysql \
     php8.1-xml php8.1-xmlrpc php8.1-curl php8.1-gd \
     php8.1-imagick php8.1-cli php8.1-dev php8.1-imap \
@@ -27,16 +29,16 @@ sudo apt install php8.1-fpm php8.1-common php8.1-mysql \
     php8.1-zip php8.1-intl -y
 
 # Install additional tools
-echo "Installing additional tools..."
+echo -e "Installing additional tools..."
 sudo apt install wget unzip curl -y
 sudo apt install net-tools -y
 
 # Install WP-CLI
-echo "Installing WP-CLI..."
+echo -e "Installing WP-CLI..."
 curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
 chmod +x wp-cli.phar
 sudo mv wp-cli.phar /usr/local/bin/wp
-echo "WP-CLI installed successfully"
+echo -e "WP-CLI installed successfully"
 
 # Secure MariaDB installation
 echo "Securing MariaDB installation..."
