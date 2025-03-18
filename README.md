@@ -1,88 +1,82 @@
-# ClassicPress Multi-Site Installation Script
+# ClassicPress Site Setup Script
 
-This repository contains scripts to help set up multiple ClassicPress websites on Ubuntu 22.04 LTS using Nginx and MariaDB.
+This script automates the installation and configuration of a ClassicPress site on a fresh Ubuntu/Debian server. It handles everything from installing required packages to configuring Nginx, MariaDB, PHP, and ClassicPress itself.
 
-## Requirements
+## Prerequisites
 
-- Ubuntu 22.04 LTS
-- Root or sudo access
+- Ubuntu 20.04/22.04 or Debian 11/12
+- Root access or sudo privileges
+- A domain name pointed to your server's IP address
 
-## Scripts
+## Configuration
 
-### 1. Initial Setup Script (`install_classicpress_requirements.sh`)
+Before running the script, edit the configuration variables at the top of `setup_classicpress.sh`:
 
-This script automatically:
-
-- Updates system packages
-- Installs and configures Nginx web server
-- Installs and sets up MariaDB database server
-- Installs PHP 8.1 with all required extensions
-- Sets up proper directory permissions
-- Creates an Nginx configuration template for ClassicPress sites
-- Configures and enables all necessary services
-
-### 2. Site Creation Script (`create_classicpress_site.sh`)
-
-This script helps you create individual ClassicPress websites. For each site, it:
-
-- Creates necessary directories
-- Downloads the latest version of ClassicPress
-- Sets up a new MySQL database and user
-- Configures Nginx virtual host
-- Generates secure passwords
-- Sets proper permissions
-- Saves site information for future reference
+```bash
+# Configuration Variables - UPDATE THESE VALUES
+DOMAIN="example.com"              # Your domain name
+SITE_TITLE="My ClassicPress Site" # Your site title
+ADMIN_EMAIL="admin@example.com"   # Admin email address
+ADMIN_USER="admin"               # Admin username
+ADMIN_PASSWORD="change-this-password" # Admin password
+DB_PASSWORD="change-this-db-password" # Database password
+```
 
 ## Usage
 
 1. Clone this repository:
-```bash
-git clone https://github.com/aeykaygee/Vanic.git
-```
+   ```bash
+   git clone [repository-url]
+   cd [repository-name]
+   ```
 
-2. Make the scripts executable:
-```bash
-chmod +x install_classicpress_requirements.sh create_classicpress_site.sh
-```
+2. Update the configuration variables in `setup_classicpress.sh`
 
-3. Run the initial setup script (only once):
-```bash
-sudo ./install_classicpress_requirements.sh
-```
+3. Make the script executable:
+   ```bash
+   chmod +x setup_classicpress.sh
+   ```
 
-4. For each new ClassicPress site you want to create:
-```bash
-sudo ./create_classicpress_site.sh
-```
+4. Run the script:
+   ```bash
+   sudo ./setup_classicpress.sh
+   ```
 
-The site creation script will prompt you for:
-- Domain name (e.g., example.com)
-- Site title
-- Admin email
-- Admin username
+## What the Script Does
 
-The script will automatically:
-- Generate secure passwords for the database and admin user
-- Create and configure the database
-- Set up the Nginx configuration
-- Install ClassicPress
-- Save all important information to a file
+1. Installs required packages (Nginx, MariaDB, PHP, etc.)
+2. Downloads and installs ClassicPress
+3. Creates and configures the database
+4. Sets up Nginx configuration
+5. Configures ClassicPress with the provided settings
+6. Sets appropriate file permissions
+7. Creates detailed logs and configuration backups
 
-## Post-Installation
+## File Locations
 
-After creating each site:
+- Website files: `/var/www/[domain]`
+- Nginx config: `/etc/nginx/sites-available/[domain].conf`
+- Install log: `/var/log/classicpress-install/install_[timestamp].log`
+- Error log: `/var/log/classicpress-install/error_[timestamp].log`
+- Site info: `/root/classicpress-configs/classicpress_[domain]_info.txt`
 
-1. Point your domain's DNS A record to your server's IP address
-2. Consider setting up SSL certificates using Let's Encrypt
-3. Visit your domain to complete the ClassicPress installation
+## Security Notes
 
-## Security
+1. Change the default passwords in the configuration
+2. Secure your MariaDB installation after script completion:
+   ```bash
+   sudo mysql_secure_installation
+   ```
+3. Consider setting up SSL/HTTPS using Let's Encrypt
+4. Review and adjust file permissions if needed
 
-- All passwords are randomly generated
-- Database credentials are unique for each site
-- Proper file permissions are set automatically
-- Configuration files are secured
-- Site information is saved in protected files
+## Troubleshooting
+
+Check the following logs for issues:
+- Installation log: `/var/log/classicpress-install/install_[timestamp].log`
+- Error log: `/var/log/classicpress-install/error_[timestamp].log`
+- Nginx error log: `/var/log/nginx/error.log`
+- PHP-FPM error log: `/var/log/php8.1-fpm.log`
 
 ## License
 
