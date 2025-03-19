@@ -1,0 +1,66 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: docker/backend/Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/vanic
+      - REDIS_URL=redis://redis:6379/0
+      - SECRET_KEY=${SECRET_KEY}
+      - ALGORITHM=HS256
+      - CLASSICPRESS_INSTALL_DIR=${CLASSICPRESS_INSTALL_DIR}
+      - NGINX_CONFIG_DIR=${NGINX_CONFIG_DIR}
+      - PHP_FPM_SOCKET=${PHP_FPM_SOCKET}
+      - MAX_SITES_PER_USER=${MAX_SITES_PER_USER}
+    depends_on:
+      - db
+      - redis
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+
+  db:
+    image: postgres:15
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=vanic
+    ports:
+      - "5432:5432"
+
+  redis:
+    image: redis:7
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+  celery:
+    build:
+      context: .
+      dockerfile: docker/backend/Dockerfile
+    volumes:
+      - ./backend:/app
+    command: celery -A app.tasks.site_tasks worker --loglevel=info
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/vanic
+      - REDIS_URL=redis://redis:6379/0
+      - SECRET_KEY=${SECRET_KEY}
+      - ALGORITHM=HS256
+      - CLASSICPRESS_INSTALL_DIR=${CLASSICPRESS_INSTALL_DIR}
+      - NGINX_CONFIG_DIR=${NGINX_CONFIG_DIR}
+      - PHP_FPM_SOCKET=${PHP_FPM_SOCKET}
+      - MAX_SITES_PER_USER=${MAX_SITES_PER_USER}
+    depends_on:
+      - backend
+      - redis
+
+volumes:
+  postgres_data:
+  redis_data: 
